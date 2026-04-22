@@ -199,16 +199,24 @@ function extractEmails(str) {
  *
  */
 function getRectangleString(width, height) {
-  if (width < 0 || height < 0) return '';
-  const top = `┌${'-'.repeat(width - 2)}┐`;
-  const middle = `│${' '.repeat(width - 2)}│`;
-  const bottom = `└${'-'.repeat(width - 2)}└`;
-  const rectangle = [top];
-  for (let i = 1; i < height - 2; i + 1) {
-    rectangle.push(middle);
+  if (width <= 0 || height <= 0) return '';
+  let top = '┌';
+  if (width > 2) top += '─'.repeat(width - 2);
+  if (width > 1) top += '┐';
+  let middle = '│';
+  if (width > 2) middle += ' '.repeat(width - 2);
+  if (width > 1) middle += '│';
+  let bottom = '└';
+  if (width > 2) bottom += '─'.repeat(width - 2);
+  if (width > 1) bottom += '┘';
+  const result = [top];
+  for (let i = 0; i < height - 2; i += 1) {
+    result.push(middle);
   }
-  if (height > 1) return rectangle.push(bottom);
-  return `${rectangle.join('/n')}/n`;
+  if (height > 1) {
+    result.push(bottom);
+  }
+  return `${result.join('\n')}${'\n'}`;
 }
 
 /**
@@ -227,8 +235,13 @@ function getRectangleString(width, height) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
-function encodeToRot13(/* str */) {
-  throw new Error('Not implemented');
+function encodeToRot13(str) {
+  return str.replace(/[a-zA-Z]/g, (char) => {
+    const code = char.charCodeAt(0);
+    const isUpperCase = code >= 65 && code <= 90;
+    const base = isUpperCase ? 65 : 97;
+    return String.fromCharCode(((code - base + 13) % 26) + base);
+  });
 }
 
 /**
@@ -244,8 +257,8 @@ function encodeToRot13(/* str */) {
  *   isString('test') => true
  *   isString(new String('test')) => true
  */
-function isString(/* value */) {
-  throw new Error('Not implemented');
+function isString(value) {
+  return typeof value === 'string' || value instanceof String;
 }
 
 /**
@@ -272,8 +285,62 @@ function isString(/* value */) {
  *   'Q♠' => 50
  *   'K♠' => 51
  */
-function getCardId(/* value */) {
-  throw new Error('Not implemented');
+function getCardId(value) {
+  const deck = [
+    'A♣',
+    '2♣',
+    '3♣',
+    '4♣',
+    '5♣',
+    '6♣',
+    '7♣',
+    '8♣',
+    '9♣',
+    '10♣',
+    'J♣',
+    'Q♣',
+    'K♣',
+    'A♦',
+    '2♦',
+    '3♦',
+    '4♦',
+    '5♦',
+    '6♦',
+    '7♦',
+    '8♦',
+    '9♦',
+    '10♦',
+    'J♦',
+    'Q♦',
+    'K♦',
+    'A♥',
+    '2♥',
+    '3♥',
+    '4♥',
+    '5♥',
+    '6♥',
+    '7♥',
+    '8♥',
+    '9♥',
+    '10♥',
+    'J♥',
+    'Q♥',
+    'K♥',
+    'A♠',
+    '2♠',
+    '3♠',
+    '4♠',
+    '5♠',
+    '6♠',
+    '7♠',
+    '8♠',
+    '9♠',
+    '10♠',
+    'J♠',
+    'Q♠',
+    'K♠',
+  ];
+  return deck.indexOf(value);
 }
 
 module.exports = {
